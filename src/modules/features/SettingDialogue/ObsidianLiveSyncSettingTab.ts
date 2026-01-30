@@ -36,7 +36,6 @@ import { LiveSyncSetting as Setting } from "./LiveSyncSetting.ts";
 import { fireAndForget, yieldNextAnimationFrame } from "octagonal-wheels/promises";
 import { confirmWithMessage } from "../../coreObsidian/UILib/dialogs.ts";
 import { EVENT_REQUEST_RELOAD_SETTING_TAB, eventHub } from "../../../common/events.ts";
-import { JournalSyncMinio } from "../../../lib/src/replication/journal/objectstore/JournalSyncMinio.ts";
 import { paneChangeLog } from "./PaneChangeLog.ts";
 import {
     enableOnly,
@@ -869,11 +868,7 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
         });
     }
 
-    getMinioJournalSyncClient() {
-        return new JournalSyncMinio(this.plugin.settings, this.plugin.simpleStore, this.plugin);
-    }
     async resetRemoteBucket() {
-        const minioJournal = this.getMinioJournalSyncClient();
-        await minioJournal.resetBucket();
+        // Obsolete
     }
 }

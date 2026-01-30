@@ -362,16 +362,16 @@ export function paneMaintenance(
                     .setWarning()
                     .setDisabled(false)
                     .onClick(async () => {
-                        await this.getMinioJournalSyncClient().updateCheckPointInfo((info) => ({
-                            ...info,
-                            receivedFiles: new Set(),
-                            knownIDs: new Set(),
-                            lastLocalSeq: 0,
-                            sentIDs: new Set(),
-                            sentFiles: new Set(),
-                        }));
-                        await this.resetRemoteBucket();
-                        Logger(`Deleted all data on remote server`, LOG_LEVEL_NOTICE);
+                        // await this.getMinioJournalSyncClient().updateCheckPointInfo((info) => ({
+                        //     ...info,
+                        //     receivedFiles: new Set(),
+                        //     knownIDs: new Set(),
+                        //     lastLocalSeq: 0,
+                        //     sentIDs: new Set(),
+                        //     sentFiles: new Set(),
+                        // }));
+                        // await this.resetRemoteBucket();
+                        // Logger(`Deleted all data on remote server`, LOG_LEVEL_NOTICE);
                     })
             )
             .addOnUpdate(this.onlyOnMinIO);

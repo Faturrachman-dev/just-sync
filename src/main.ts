@@ -16,7 +16,6 @@ import { LiveSyncCommands } from "./features/LiveSyncCommands.ts";
 import { HiddenFileSync } from "./features/HiddenFileSync/CmdHiddenFileSync.ts";
 import { ConfigSync } from "./features/ConfigSync/CmdConfigSync.ts";
 import { reactiveSource, type ReactiveValue } from "octagonal-wheels/dataobject/reactive";
-import { type LiveSyncJournalReplicatorEnv } from "./lib/src/replication/journal/LiveSyncJournalReplicator.js";
 import { type LiveSyncCouchDBReplicatorEnv } from "./lib/src/replication/couchdb/LiveSyncReplicator.js";
 import type { CheckPointInfo } from "./lib/src/replication/journal/JournalSyncTypes.js";
 import type { IObsidianModule } from "./modules/AbstractObsidianModule.ts";
@@ -52,8 +51,7 @@ import { ModuleKeyValueDB } from "./modules/essential/ModuleKeyValueDB.ts";
 import { ModulePouchDB } from "./modules/core/ModulePouchDB.ts";
 import { ModuleReplicator } from "./modules/core/ModuleReplicator.ts";
 import { ModuleReplicatorCouchDB } from "./modules/core/ModuleReplicatorCouchDB.ts";
-import { ModuleReplicatorMinIO } from "./modules/core/ModuleReplicatorMinIO.ts";
-import { ModuleTargetFilter } from "./modules/core/ModuleTargetFilter.ts";
+// import { ModuleReplicatorMinIO } from "./modules/core/ModuleReplicatorMinIO.ts";
 import { ModulePeriodicProcess } from "./modules/core/ModulePeriodicProcess.ts";
 import { ModuleRemoteGovernor } from "./modules/coreFeatures/ModuleRemoteGovernor.ts";
 import { ModuleLocalDatabaseObsidian } from "./modules/core/ModuleLocalDatabaseObsidian.ts";
@@ -65,9 +63,7 @@ import { ModuleReplicateTest } from "./modules/extras/ModuleReplicateTest.ts";
 import { ModuleLiveSyncMain } from "./modules/main/ModuleLiveSyncMain.ts";
 import { ModuleExtraSyncObsidian } from "./modules/extraFeaturesObsidian/ModuleExtraSyncObsidian.ts";
 import { LocalDatabaseMaintenance } from "./features/LocalDatabaseMainte/CmdLocalDatabaseMainte.ts";
-import { P2PReplicator } from "./features/P2PSync/CmdP2PReplicator.ts";
 import type { LiveSyncManagers } from "./lib/src/managers/LiveSyncManagers.ts";
-import { ObsidianServiceHub } from "./modules/services/ObsidianServices.ts";
 import type { InjectableServiceHub } from "./lib/src/services/InjectableServices.ts";
 import type { ServiceContext } from "./lib/src/services/ServiceHub.ts";
 
@@ -109,7 +105,6 @@ export default class ObsidianLiveSyncPlugin
     ] as LiveSyncCommands[];
 
     modules = [
-        new ModuleLiveSyncMain(this),
         new ModuleExtraSyncObsidian(this, this),
         // Only on Obsidian
         new ModuleDatabaseFileAccess(this),
@@ -122,8 +117,7 @@ export default class ObsidianLiveSyncPlugin
         new ModuleReplicator(this),
         new ModuleFileHandler(this),
         new ModuleConflictResolver(this),
-        new ModuleRemoteGovernor(this),
-        new ModuleTargetFilter(this),
+        new ModuleRemoteGoveer(this),
         new ModulePeriodicProcess(this),
         // Obsidian modules
         new ModuleKeyValueDB(this),

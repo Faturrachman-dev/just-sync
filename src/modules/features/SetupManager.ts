@@ -21,7 +21,7 @@ import OutroAskUserMode from "./SetupWizard/dialogs/OutroAskUserMode.svelte";
 import SetupRemote from "./SetupWizard/dialogs/SetupRemote.svelte";
 import SetupRemoteCouchDB from "./SetupWizard/dialogs/SetupRemoteCouchDB.svelte";
 import SetupRemoteBucket from "./SetupWizard/dialogs/SetupRemoteBucket.svelte";
-import SetupRemoteP2P from "./SetupWizard/dialogs/SetupRemoteP2P.svelte";
+// import SetupRemoteP2P from "./SetupWizard/dialogs/SetupRemoteP2P.svelte";
 import SetupRemoteE2EE from "./SetupWizard/dialogs/SetupRemoteE2EE.svelte";
 import { decodeSettingsFromQRCodeData } from "../../lib/src/API/processSetting.ts";
 
@@ -186,16 +186,17 @@ export class SetupManager extends AbstractObsidianModule {
         currentSetting: ObsidianLiveSyncSettings,
         activate = true
     ): Promise<boolean> {
-        const p2pConf = await this.dialogManager.openWithExplicitCancel(SetupRemoteP2P, currentSetting);
-        if (p2pConf === "cancelled") {
-            this._log("Manual configuration cancelled.", LOG_LEVEL_NOTICE);
-            return await this.onOnboard(userMode);
-        }
-        const newSetting = { ...currentSetting, ...p2pConf } as ObsidianLiveSyncSettings;
-        if (activate) {
-            newSetting.remoteType = REMOTE_P2P;
-        }
-        return await this.onConfirmApplySettingsFromWizard(newSetting, userMode, activate);
+        // const p2pConf = await this.dialogManager.openWithExplicitCancel(SetupRemoteP2P, currentSetting);
+        // if (p2pConf === "cancelled") {
+        //     this._log("Manual configuration cancelled.", LOG_LEVEL_NOTICE);
+        //     return await this.onOnboard(userMode);
+        // }
+        // const newSetting = { ...currentSetting, ...p2pConf } as ObsidianLiveSyncSettings;
+        // if (activate) {
+        //     newSetting.remoteType = REMOTE_P2P;
+        // }
+        // return await this.onConfirmApplySettingsFromWizard(newSetting, userMode, activate);
+        return false;
     }
 
     /**
