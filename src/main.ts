@@ -39,6 +39,7 @@ import type { Rebuilder } from "./modules/interfaces/DatabaseRebuilder.ts";
 import type { DatabaseFileAccess } from "./modules/interfaces/DatabaseFileAccess.ts";
 import { ModuleDatabaseFileAccess } from "./modules/core/ModuleDatabaseFileAccess.ts";
 import { ModuleFileHandler } from "./modules/core/ModuleFileHandler.ts";
+import { ModuleTargetFilter } from "./modules/core/ModuleTargetFilter.ts";
 import { ModuleObsidianAPI } from "./modules/essentialObsidian/ModuleObsidianAPI.ts";
 import { ModuleObsidianEvents } from "./modules/essentialObsidian/ModuleObsidianEvents.ts";
 import { type AbstractModule } from "./modules/AbstractModule.ts";
@@ -118,6 +119,7 @@ export default class ObsidianLiveSyncPlugin
         new ModuleReplicatorCouchDB(this),
         new ModuleReplicator(this),
         new ModuleFileHandler(this),
+        new ModuleTargetFilter(this),
         new ModuleConflictResolver(this),
         new ModuleRemoteGovernor(this),
         new ModulePeriodicProcess(this),
