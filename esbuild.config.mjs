@@ -88,7 +88,7 @@ const plugins = [
                     if (prod) {
                         console.log("MetaFile:");
                         if (result.metafile) {
-                            fs.writeFileSync("meta.json", JSON.stringify(result.metafile));
+                            fs.writeFileSync(path.join(outDir, "meta.json"), JSON.stringify(result.metafile));
                             let text = await esbuild.analyzeMetafile(result.metafile, {
                                 verbose: true,
                             });
@@ -98,7 +98,7 @@ const plugins = [
                 } else {
                     console.log("subsequent build:");
                 }
-                const filename = `meta-${prod ? "prod" : "dev"}.json`;
+                const filename = path.join(outDir, `meta-${prod ? "prod" : "dev"}.json`);
                 await fs.promises.writeFile(filename, JSON.stringify(result.metafile, null, 2));
                 if (prod) {
                     console.log("Performing terser");

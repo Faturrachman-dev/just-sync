@@ -106,6 +106,7 @@ export default class ObsidianLiveSyncPlugin
     ] as LiveSyncCommands[];
 
     modules = [
+        new ModuleLiveSyncMain(this),
         new ModuleExtraSyncObsidian(this, this),
         // Only on Obsidian
         new ModuleDatabaseFileAccess(this),
