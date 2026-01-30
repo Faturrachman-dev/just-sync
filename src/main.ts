@@ -63,6 +63,7 @@ import { ModuleReplicateTest } from "./modules/extras/ModuleReplicateTest.ts";
 import { ModuleLiveSyncMain } from "./modules/main/ModuleLiveSyncMain.ts";
 import { ModuleExtraSyncObsidian } from "./modules/extraFeaturesObsidian/ModuleExtraSyncObsidian.ts";
 import { LocalDatabaseMaintenance } from "./features/LocalDatabaseMainte/CmdLocalDatabaseMainte.ts";
+import { ObsidianServiceHub } from "./modules/services/ObsidianServices.ts";
 import type { LiveSyncManagers } from "./lib/src/managers/LiveSyncManagers.ts";
 import type { InjectableServiceHub } from "./lib/src/services/InjectableServices.ts";
 import type { ServiceContext } from "./lib/src/services/ServiceHub.ts";
@@ -101,7 +102,7 @@ export default class ObsidianLiveSyncPlugin
         new ConfigSync(this),
         new HiddenFileSync(this),
         new LocalDatabaseMaintenance(this),
-        new P2PReplicator(this),
+        // new P2PReplicator(this),
     ] as LiveSyncCommands[];
 
     modules = [
@@ -112,12 +113,12 @@ export default class ObsidianLiveSyncPlugin
         new ModulePouchDB(this),
         new ModuleConflictChecker(this),
         new ModuleLocalDatabaseObsidian(this),
-        new ModuleReplicatorMinIO(this),
+        // new ModuleReplicatorMinIO(this),
         new ModuleReplicatorCouchDB(this),
         new ModuleReplicator(this),
         new ModuleFileHandler(this),
         new ModuleConflictResolver(this),
-        new ModuleRemoteGoveer(this),
+        new ModuleRemoteGovernor(this),
         new ModulePeriodicProcess(this),
         // Obsidian modules
         new ModuleKeyValueDB(this),

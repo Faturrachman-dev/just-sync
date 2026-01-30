@@ -46,8 +46,8 @@ export function paneRemoteConfig(
 ): void {
     const remoteNameMap = {
         [REMOTE_COUCHDB]: $msg("obsidianLiveSyncSettingTab.optionCouchDB"),
-        [REMOTE_MINIO]: $msg("obsidianLiveSyncSettingTab.optionMinioS3R2"),
-        [REMOTE_P2P]: "Only Peer-to-Peer",
+        // [REMOTE_MINIO]: $msg("obsidianLiveSyncSettingTab.optionMinioS3R2"),
+        // [REMOTE_P2P]: "Only Peer-to-Peer",
     } as const;
 
     {

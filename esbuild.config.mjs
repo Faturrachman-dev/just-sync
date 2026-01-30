@@ -124,8 +124,9 @@ const plugins = [
                         const realPath = path.resolve(installPath);
                         console.log(`Copying built files to ${realPath}`);
                         if (!fs.existsSync(realPath)) {
-                            console.warn(`Test install path ${installPath} does not exist`);
-                            continue;
+                             // console.warn(`Test install path ${installPath} does not exist`);
+                             // continue;
+                             fs.mkdirSync(realPath, { recursive: true });
                         }
                         const manifestX = JSON.parse(fs.readFileSync("./manifest.json") + "");
                         manifestX.version = manifestJson.version + "." + Date.now();

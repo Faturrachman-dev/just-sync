@@ -40,6 +40,7 @@
             This is the most suitable synchronisation method for the design. All functions are available. You must have
             set up a CouchDB instance.
         </Option>
+        <!--
         <Option selectedValue={TYPE_BUCKET} title="S3/MinIO/R2 Object Storage" bind:value={userType}>
             Synchronisation utilising journal files. You must have set up an S3/MinIO/R2 compatible object storage.
         </Option>
@@ -48,6 +49,7 @@
             both devices must be online at the same time for synchronisation to occur, and some features may be limited.
             Internet connection is only required to signalling (detecting peers) and not for data transfer.
         </Option>
+        -->
     </Options>
 </Instruction>
 <UserDecisions>
