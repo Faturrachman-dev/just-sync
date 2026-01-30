@@ -1,7 +1,7 @@
 {
-    "name": "obsidian-livesync",
+    "name": "just-sync",
     "version": "0.25.41",
-    "description": "Reflect your vault changes to some other devices immediately. Please make sure to disable other synchronize solutions to avoid content corruption or duplication.",
+    "description": "Modified version of Self-hosted LiveSync - Just Sync.",
     "main": "main.js",
     "type": "module",
     "scripts": {

@@ -12,12 +12,17 @@ import inlineWorkerPlugin from "esbuild-plugin-inline-worker";
 import { terserOption } from "./terser.config.mjs";
 import path from "node:path";
 
+const outDir = "./dist";
+if (!fs.existsSync(outDir)) {
+    fs.mkdirSync(outDir, { recursive: true });
+}
+
 const prod = process.argv[2] === "production" || process.env?.BUILD_MODE === "production";
 const keepTest = true; //!prod;
 
 const manifestJson = JSON.parse(fs.readFileSync("./manifest.json") + "");
 const packageJson = JSON.parse(fs.readFileSync("./package.json") + "");
-const updateInfo = JSON.stringify(fs.readFileSync("./updates.md") + "");
+const updateInfo = JSON.stringify(fs.readFileSync("./docs/archive/updates.md") + "");
 
 const PATHS_TEST_INSTALL = process.env?.PATHS_TEST_INSTALL || "";
 const PATH_TEST_INSTALL = PATHS_TEST_INSTALL.split(path.delimiter).map(p => p.trim()).filter(p => p.length);
@@ -97,16 +102,23 @@ const plugins = [
                 await fs.promises.writeFile(filename, JSON.stringify(result.metafile, null, 2));
                 if (prod) {
                     console.log("Performing terser");
-                    const src = fs.readFileSync("./main_org.js").toString();
+                    const src = fs.readFileSync(path.join(outDir, "main_org.js")).toString();
                     // @ts-ignore
                     const ret = await minify(src, terserOption);
                     if (ret && ret.code) {
-                        fs.writeFileSync("./main.js", ret.code);
+                        fs.writeFileSync(path.join(outDir, "main.js"), ret.code);
                     }
                     console.log("Finished terser");
                 } else {
-                    fs.copyFileSync("./main_org.js", "./main.js");
+                    fs.copyFileSync(path.join(outDir, "main_org.js"), path.join(outDir, "main.js"));
                 }
+
+                fs.copyFileSync("./manifest.json", path.join(outDir, "manifest.json"));
+                fs.copyFileSync("./styles.css", path.join(outDir, "styles.css"));
+                if (fs.existsSync("./versions.json")) {
+                    fs.copyFileSync("./versions.json", path.join(outDir, "versions.json"));
+                }
+
                 if (PATH_TEST_INSTALL) {
                     for (const installPath of PATH_TEST_INSTALL) {
                         const realPath = path.resolve(installPath);
@@ -118,8 +130,8 @@ const plugins = [
                         const manifestX = JSON.parse(fs.readFileSync("./manifest.json") + "");
                         manifestX.version = manifestJson.version + "." + Date.now();
                         fs.writeFileSync(path.join(installPath, "manifest.json"), JSON.stringify(manifestX, null, 2));
-                        fs.copyFileSync("./main.js", path.join(installPath, "main.js"));
-                        fs.copyFileSync("./styles.css", path.join(installPath, "styles.css"));
+                        fs.copyFileSync(path.join(outDir, "main.js"), path.join(installPath, "main.js"));
+                        fs.copyFileSync(path.join(outDir, "styles.css"), path.join(installPath, "styles.css"));
                     }
                 }
             });
@@ -164,7 +176,7 @@ const context = await esbuild.context({
     metafile: true,
     sourcemap: prod ? false : "inline",
     treeShaking: false,
-    outfile: "main_org.js",
+    outfile: path.join(outDir, "main_org.js"),
     mainFields: ["browser", "module", "main"],
     minifyWhitespace: false,
     minifySyntax: false,
