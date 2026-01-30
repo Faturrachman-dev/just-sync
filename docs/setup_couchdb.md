@@ -164,45 +164,27 @@ You will then get the following output:
 Now `https://tiles-photograph-routine-groundwater.trycloudflare.com` is our server. Make it into the background once, please.
 
 
-## 4. Client Setup
-> [!TIP]
-> Now manual configuration is not recommended for some reasons. However, if you want to do so, please use `Setup wizard`. The recommended extra configurations will be also set.
+## 4. Client Setup (Just Sync)
 
-### 1. Generate the setup URI on a desktop device or server
-```bash
-export hostname=https://tiles-photograph-routine-groundwater.trycloudflare.com #Point to your vault
-export database=obsidiannotes #Please change as you like
-export passphrase=dfsapkdjaskdjasdas #Please change as you like
-export username=johndoe
-export password=abc123
-deno run -A https://raw.githubusercontent.com/vrtmrz/obsidian-livesync/main/utils/flyio/generate_setupuri.ts
-```
+Once your CouchDB is running, you need to configure the plugin.
 
-> [!TIP]
-> What is the `passphrase`? Is it different from `uri_passphrase`?
-> Yes, the `passphrase` we have exported now is for an End-to-End Encryption passphrase.
-> And, `uri_passphrase` that used in the `generate_setupuri.ts` is a different one; for decrypting Set-up URI at using that.
-> Why: I (vorotamoroz) think that the passphrase of the Setup-URI should be different from the E2EE passphrase to prevent exposure caused by operational errors or the possibility of evil in our environment. On top of that, I believe that it is desirable for the Setup-URI to be random. Setup-URI is inevitably long, so it goes through the clipboard. I think that its passphrase should not go through the same path, so it should essentially be typed manually.
-> Hence, if we keep empty for uri_passphrase, generate_setupuri.ts generates an adjective-noun-randomnumber passphrase so that we can remember it without going through the clipboard.
+### Manual Configuration
 
-You will then get the following output:
+1. In Obsidian, open Settings -> **Just Sync**.
+2. Go to **Remote Configuration**.
+3. Select **CouchDB** (The only option).
+4. Fill in your details:
+   - **URI**: `http://<your-server-ip>:5984` (or `https://<your-domain>`)
+   - **Username**: The one you set in `COUCHDB_USER`.
+   - **Password**: The one you set in `COUCHDB_PASSWORD`.
+   - **Database Name**: Give it a name like `obsidian_vault`.
+5. Click **Check** to test the connection.
+   - If it says "Connected", you are good to go!
+   - If it fails, check your CORS settings or firewall.
+6. **End-to-End Encryption**: Enable this option and set a strong passphrase to encrypt your data on the server.
+7. Click **Apply**.
+8. Go back to the main General Settings and enable the plugin.
 
-```bash
-obsidian://setuplivesync?settings=%5B%22tm2DpsOE74nJAryprZO2M93wF%2Fvg.......4b26ed33230729%22%5D
-
-Your passphrase of Setup-URI is:  patient-haze
-This passphrase is never shown again, so please note it in a safe place.
-```
-
-Please keep your passphrase of Setup-URI.
-
-### 2. Setup Self-hosted LiveSync to Obsidian
-[This video](https://youtu.be/7sa_I1832Xc?t=146) may help us.
-1. Install Self-hosted LiveSync
-2. Choose `Use the copied setup URI` from the command palette and paste the setup URI. (obsidian://setuplivesync?settings=.....).
-3. Type the previously displayed passphrase (`patient-haze`) for setup-uri passphrase.
-4. Answer `yes` and `Set it up...`, and finish the first dialogue with `Keep them disabled`.
-5. `Reload app without save` once.
 
 ---
 
