@@ -20,7 +20,7 @@ The original LiveSync plugin is a masterpiece of flexibility, supporting P2P (We
 
 ## Requirements
 
-1.  **Obsidian** (v0.15.0+)
+1.  **Obsidian**
 2.  **A CouchDB Instance** (Self-hosted via Docker, Cloudant, etc.)
 
 ## Installation
