@@ -18,13 +18,13 @@ export class ModuleObsidianMenu extends AbstractObsidianModule {
            </g>`
         );
 
-        this.addRibbonIcon("replicate", $msg("moduleObsidianMenu.replicate"), async () => {
+        this.addRibbonIcon("replicate", "Just-Sync now!", async () => {
             await this.services.replication.replicate(true);
         }).addClass("livesync-ribbon-replicate");
 
         this.addCommand({
             id: "livesync-replicate",
-            name: "Replicate now",
+            name: "Just-Sync now!",
             callback: async () => {
                 await this.services.replication.replicate();
             },
