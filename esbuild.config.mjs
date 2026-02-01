@@ -101,6 +101,7 @@ const plugins = [
                 const filename = path.join(outDir, `meta-${prod ? "prod" : "dev"}.json`);
                 await fs.promises.writeFile(filename, JSON.stringify(result.metafile, null, 2));
                 if (prod) {
+                    /*
                     console.log("Performing terser");
                     const src = fs.readFileSync(path.join(outDir, "main_org.js")).toString();
                     // @ts-ignore
@@ -109,6 +110,9 @@ const plugins = [
                         fs.writeFileSync(path.join(outDir, "main.js"), ret.code);
                     }
                     console.log("Finished terser");
+                    */
+                   // Optimized: Use esbuild native minification (10x faster)
+                   fs.copyFileSync(path.join(outDir, "main_org.js"), path.join(outDir, "main.js"));
                 } else {
                     fs.copyFileSync(path.join(outDir, "main_org.js"), path.join(outDir, "main.js"));
                 }
@@ -179,10 +183,10 @@ const context = await esbuild.context({
     treeShaking: false,
     outfile: path.join(outDir, "main_org.js"),
     mainFields: ["browser", "module", "main"],
-    minifyWhitespace: false,
-    minifySyntax: false,
-    minifyIdentifiers: false,
-    minify: false,
+    minifyWhitespace: prod,
+    minifySyntax: prod,
+    minifyIdentifiers: prod,
+    minify: prod,
     dropLabels: prod && !keepTest ? ["TEST", "DEV"] : [],
     // keepNames: true,
     plugins: [

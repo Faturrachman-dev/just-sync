@@ -16,7 +16,7 @@
   - [Questions and Answers](#questions-and-answers)
     - [How should I share the settings between multiple devices?](#how-should-i-share-the-settings-between-multiple-devices)
     - [What should I enter for the passphrase of Setup-URI?](#what-should-i-enter-for-the-passphrase-of-setup-uri)
-    - [Why the settings of Self-hosted LiveSync itself is disabled in default?](#why-the-settings-of-self-hosted-livesync-itself-is-disabled-in-default)
+    - [Why the settings of Just Sync itself is disabled in default?](#why-the-settings-of-just-sync-itself-is-disabled-in-default)
     - [The plug-in says `something went wrong`.](#the-plug-in-says-something-went-wrong)
     - [A large number of files were deleted, and were synchronised!](#a-large-number-of-files-were-deleted-and-were-synchronised)
     - [Why `Use an old adapter for compatibility` is somehow enabled in my vault?](#why-use-an-old-adapter-for-compatibility-is-somehow-enabled-in-my-vault)

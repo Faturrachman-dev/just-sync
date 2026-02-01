@@ -18,7 +18,7 @@
   - [3. Expose CouchDB to the Internet](#3-expose-couchdb-to-the-internet)
   - [4. Client Setup](#4-client-setup)
     - [1. Generate the setup URI on a desktop device or server](#1-generate-the-setup-uri-on-a-desktop-device-or-server)
-    - [2. Setup Self-hosted LiveSync to Obsidian](#2-setup-self-hosted-livesync-to-obsidian)
+    - [2. Setup Just Sync to Obsidian](#2-setup-just-sync-to-obsidian)
   - [Manual setup information](#manual-setup-information)
     - [Setting up your domain](#setting-up-your-domain)
   - [Reverse Proxies](#reverse-proxies)
