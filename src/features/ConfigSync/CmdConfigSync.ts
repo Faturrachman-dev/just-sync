@@ -1078,7 +1078,8 @@ export class ConfigSync extends LiveSyncCommands {
                 throw "Not found on database";
             }
             const loadedData = deserialize(getDocDataAsArray(dx.data), {}) as PluginDataEx;
-            for (const f of loadedData.files) {
+            // Parallelize file writes for better performance
+            const writePromises = loadedData.files.map(async (f) => {
                 this._log(`Applying ${f.filename} of ${data.displayName || data.name}..`);
                 try {
                     // console.dir(f);
@@ -1095,7 +1096,8 @@ export class ConfigSync extends LiveSyncCommands {
                     this._log(`Applying ${f.filename} of ${data.displayName || data.name}.. Failed`);
                     this._log(ex, LOG_LEVEL_VERBOSE);
                 }
-            }
+            });
+            await Promise.all(writePromises);
             const uPath = `${baseDir}/${loadedData.files[0].filename}` as FilePath;
             await this.storeCustomizationFiles(uPath);
             await this.updatePluginList(true, uPath);

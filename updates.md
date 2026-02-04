@@ -1,5 +1,10 @@
 # Updates
 
+## 0.2.7
+- **Performance**: Parallelized file scanning operations (adoptCurrentStorageFilesAsProcessed, adoptCurrentDatabaseFilesAsProcessed).
+- **Performance**: Fixed scanInternalFiles to properly parallelize ignore checks.
+- **Performance**: Config sync now writes files concurrently instead of sequentially.
+
 ## 0.2.6
 - **Bugfix**: Status bar now correctly shows "Error ⚠" when server connection fails (previously showed "Idle ⏹").
 
