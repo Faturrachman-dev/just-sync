@@ -1,5 +1,8 @@
 # Updates
 
+## 0.2.6
+- **Bugfix**: Status bar now correctly shows "Error ⚠" when server connection fails (previously showed "Idle ⏹").
+
 ## 0.2.5
 - **Performance**: Parallelized chunk resurrection in database maintenance.
 - **UX**: Enhanced connection check now verifies database existence and write permissions.
