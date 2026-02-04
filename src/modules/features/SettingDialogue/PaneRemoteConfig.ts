@@ -3,6 +3,7 @@ import {
     REMOTE_MINIO,
     REMOTE_P2P,
     type ObsidianLiveSyncSettings,
+    LOG_LEVEL_NOTICE,
 } from "../../../lib/src/common/types.ts";
 import { $msg } from "../../../lib/src/common/i18n.ts";
 import { LiveSyncSetting as Setting } from "./LiveSyncSetting.ts";
@@ -21,6 +22,9 @@ import {
 import { SETTING_KEY_P2P_DEVICE_NAME } from "../../../lib/src/common/types.ts";
 import { SetupManager, UserMode } from "../SetupManager.ts";
 import { OnDialogSettingsDefault, type AllSettings } from "./settingConstants.ts";
+import { Platform } from "../../../deps.ts";
+import { executeServerCommand } from "../../../common/serverCommand.ts";
+import { Logger } from "../../../lib/src/common/logger.ts";
 
 function getSettingsFromEditingSettings(editingSettings: AllSettings): ObsidianLiveSyncSettings {
     const workObj = { ...editingSettings } as ObsidianLiveSyncSettings;
@@ -264,6 +268,85 @@ export function paneRemoteConfig(
         paneEl.addClass("wizardHidden");
         new Setting(paneEl).autoWireNumeric("notifyThresholdOfRemoteStorageSize", {}).setClass("wizardHidden");
     });
+
+    // Server Start Command (Desktop Only)
+    if (Platform.isDesktop) {
+        void addPanel(paneEl, "Server Control (Desktop)", () => {}).then((paneEl) => {
+            paneEl.addClass("wizardHidden");
+            
+            new Setting(paneEl)
+                .setName("Cloudflared Tunnel Name")
+                .setDesc("Name of the Cloudflare tunnel to run (e.g., 'obsidian').")
+                .addText((text) =>
+                    text
+                        .setPlaceholder("e.g., obsidian")
+                        .setValue(this.editingSettings.cloudflaredTunnelName || "")
+                        .onChange((value) => {
+                            this.editingSettings.cloudflaredTunnelName = value;
+                        })
+                )
+                .then((setting) => {
+                    setting.controlEl.querySelector("input")?.addClass("wide-input");
+                });
+
+            const statusEl = paneEl.createDiv({ cls: "server-status" });
+
+            new Setting(paneEl)
+                .setName("Start Server")
+                .setDesc("Execute 'cloudflared tunnel run <name>' to start your server")
+                .addButton((button) =>
+                    button
+                        .setButtonText("Start Server")
+                        .setCta()
+                        .onClick(async () => {
+                            const tunnelName = this.editingSettings.cloudflaredTunnelName;
+                            if (!tunnelName || tunnelName.trim() === "") {
+                                Logger("No Cloudflare tunnel name configured", LOG_LEVEL_NOTICE);
+                                statusEl.setText("⚠️ No tunnel name configured");
+                                statusEl.addClass("status-error");
+                                return;
+                            }
+                            
+                            const command = `cloudflared tunnel run "${tunnelName}"`;
+
+                            statusEl.setText(`⏳ Starting tunnel '${tunnelName}'...`);
+                            statusEl.removeClass("status-error");
+                            statusEl.removeClass("status-success");
+                            
+                            const result = await executeServerCommand(command);
+                            
+                            if (result.success) {
+                                statusEl.setText("✅ " + (result.output || "Server started"));
+                                statusEl.addClass("status-success");
+                                Logger(`Server started: ${result.output || "OK"}`, LOG_LEVEL_NOTICE);
+                            } else {
+                                statusEl.setText("❌ " + (result.error || "Failed to start"));
+                                statusEl.addClass("status-error");
+                                Logger(`Server start failed: ${result.error}`, LOG_LEVEL_NOTICE);
+                            }
+                        })
+                )
+                .addButton((button) =>
+                    button
+                        .setButtonText("Test Connection")
+                        .onClick(async () => {
+                            statusEl.setText("⏳ Testing connection...");
+                            statusEl.removeClass("status-error");
+                            statusEl.removeClass("status-success");
+                            
+                            try {
+                                await this.testConnection();
+                                statusEl.setText("✅ Connection successful");
+                                statusEl.addClass("status-success");
+                            } catch (e) {
+                                const errorMsg = e instanceof Error ? e.message : String(e);
+                                statusEl.setText("❌ Connection failed: " + errorMsg);
+                                statusEl.addClass("status-error");
+                            }
+                        })
+                );
+        });
+    }
 
     // new Setting(paneEl).setClass("wizardOnly").addButton((button) =>
     //     button
