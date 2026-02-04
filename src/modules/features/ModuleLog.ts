@@ -128,27 +128,43 @@ export class ModuleLog extends AbstractObsidianModule {
             let pushLast = "";
             let pullLast = "";
             let w = "";
+            let statusText = "";
             const labels: Partial<Record<DatabaseConnectingStatus, string>> = {
                 CONNECTED: "⚡",
                 JOURNAL_SEND: "📦↑",
                 JOURNAL_RECEIVE: "📦↓",
+            };
+            const statusTexts: Partial<Record<DatabaseConnectingStatus, string>> = {
+                CONNECTED: "Connected",
+                JOURNAL_SEND: "Sending",
+                JOURNAL_RECEIVE: "Receiving",
+                CLOSED: "Idle",
+                COMPLETED: "Idle",
+                NOT_CONNECTED: "Idle",
+                STARTED: "Syncing",
+                PAUSED: "Paused",
+                ERRORED: "Error",
             };
             switch (e.syncStatus) {
                 case "CLOSED":
                 case "COMPLETED":
                 case "NOT_CONNECTED":
                     w = "⏹";
+                    statusText = "Idle";
                     break;
                 case "STARTED":
                     w = "🌀";
+                    statusText = "Syncing";
                     break;
                 case "PAUSED":
                     w = "💤";
+                    statusText = "Paused";
                     break;
                 case "CONNECTED":
                 case "JOURNAL_SEND":
                 case "JOURNAL_RECEIVE":
                     w = labels[e.syncStatus] || "⚡";
+                    statusText = statusTexts[e.syncStatus] || "Connected";
                     pushLast =
                         lastSyncPushSeq == 0
                             ? ""
@@ -164,10 +180,14 @@ export class ModuleLog extends AbstractObsidianModule {
                     break;
                 case "ERRORED":
                     w = "⚠";
+                    statusText = "Error";
                     break;
                 default:
                     w = "?";
+                    statusText = "Unknown";
             }
+            // Prepend readable text to icon
+            w = `${statusText} ${w}`;
             return { w, sent, pushLast, arrived, pullLast };
         });
         const labelProc = padLeftSpComputed(this.core.processing, `⏳`);

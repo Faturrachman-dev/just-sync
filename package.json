@@ -1,6 +1,6 @@
 {
     "name": "just-sync",
-    "version": "0.2.3",
+    "version": "0.2.5",
     "description": "Modified version of Self-hosted LiveSync - Just Sync.",
     "main": "main.js",
     "type": "module",

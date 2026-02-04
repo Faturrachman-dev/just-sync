@@ -1842,29 +1842,30 @@ ${messageFetch}${messageOverwrite}${messageMerge}
         return result;
     }
 
-    async getFiles(path: string, checkFunction: (path: FilePath) => Promise<boolean> | boolean) {
+    async getFiles(path: string, checkFunction: (path: FilePath) => Promise<boolean> | boolean, accumulator: string[] = []) {
         let w: ListedFiles;
         try {
             w = await this.app.vault.adapter.list(path);
         } catch (ex) {
             this._log(`Could not traverse(HiddenSync):${path}`, LOG_LEVEL_INFO);
             this._log(ex, LOG_LEVEL_VERBOSE);
-            return [];
+            return accumulator;
         }
-        let files = [] as string[];
+        
         for (const file of w.files) {
             if (!(await checkFunction(file as FilePath))) {
                 continue;
             }
-            files.push(file);
+            accumulator.push(file);
         }
         for (const v of w.folders) {
             if (!(await checkFunction(v as FilePath))) {
                 continue;
             }
-            files = files.concat(await this.getFiles(v, checkFunction));
+            // Pass accumulator down instead of concatenating
+            await this.getFiles(v, checkFunction, accumulator);
         }
-        return files;
+        return accumulator;
     }
     /*
     async getFiles_(path: string, ignoreList: string[], filter?: CustomRegExp[], ignoreFilter?: CustomRegExp[]) {

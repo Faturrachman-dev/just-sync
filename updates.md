@@ -1,5 +1,16 @@
 # Updates
 
+## 0.2.5
+- **Performance**: Parallelized chunk resurrection in database maintenance.
+- **UX**: Enhanced connection check now verifies database existence and write permissions.
+- **UX**: Renamed "Scram!" panel to "Troubleshooting" with clearer action descriptions.
+- **UX**: Status bar now shows readable text ("Idle", "Syncing", "Paused", "Error") alongside icons.
+
+## 0.2.4
+- **Performance**: Optimized file content comparison (removed Base64 conversion overhead).
+- **Performance**: Fixed O(N²) array concatenation in HiddenFileSync recursive traversal.
+- **Performance**: Eliminated redundant database fetches in ConfigSync plugin scanning.
+
 ## 0.2.3
 - **Rebranding**: All log messages now say "Just Sync" instead of "Self-hosted LiveSync".
 
