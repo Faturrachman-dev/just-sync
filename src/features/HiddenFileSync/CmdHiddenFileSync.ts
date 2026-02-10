@@ -431,19 +431,19 @@ export class HiddenFileSync extends LiveSyncCommands {
     async adoptCurrentStorageFilesAsProcessed(targetFiles: FilePath[] | false) {
         const allFiles = await this.scanInternalFileNames();
         const files = targetFiles ? allFiles.filter((e) => targetFiles.some((t) => e.indexOf(t) !== -1)) : allFiles;
-        for (const file of files) {
-            await this.updateLastProcessedAsActualFile(file);
-        }
+        // Parallelize file stat operations for better performance
+        await Promise.all(files.map(file => this.updateLastProcessedAsActualFile(file)));
     }
     async adoptCurrentDatabaseFilesAsProcessed(targetFiles: FilePath[] | false) {
         const allFiles = await this.getAllDatabaseFiles();
         const files = targetFiles
             ? allFiles.filter((e) => targetFiles.some((t) => e.path.indexOf(t) !== -1))
             : allFiles;
-        for (const file of files) {
+        // Parallelize database operations for better performance
+        await Promise.all(files.map(async (file) => {
             const path = stripAllPrefixes(this.getPath(file));
             await this.updateLastProcessedAsActualDatabase(path, file);
-        }
+        }));
     }
 
     semaphore = Semaphore(10);
@@ -1817,23 +1817,26 @@ ${messageFetch}${messageOverwrite}${messageMerge}
 
     async scanInternalFiles(): Promise<InternalFileInfo[]> {
         const fileNames = await this.scanInternalFileNames();
-        const files = fileNames.map(async (e) => {
-            return {
-                path: e,
-                stat: await this.plugin.storageAccess.statHidden(e), // this.plugin.vaultAccess.adapterStat(e)
-            };
+        // Parallelize stat and ignore checks for better performance
+        const filePromises = fileNames.map(async (path) => {
+            const stat = await this.plugin.storageAccess.statHidden(path);
+            const isIgnored = await this.services.vault.isIgnoredByIgnoreFile(path);
+            return { path, stat, isIgnored };
         });
+        
+        const fileResults = await Promise.all(filePromises);
         const result: InternalFileInfo[] = [];
-        for (const f of files) {
-            const w = await f;
-            if (await this.services.vault.isIgnoredByIgnoreFile(w.path)) {
+        
+        for (const w of fileResults) {
+            if (w.isIgnored) {
                 continue;
             }
             const mtime = w.stat?.mtime ?? 0;
             const ctime = w.stat?.ctime ?? mtime;
             const size = w.stat?.size ?? 0;
             result.push({
-                ...w,
+                path: w.path,
+                stat: w.stat,
                 mtime,
                 ctime,
                 size,
@@ -1842,29 +1845,30 @@ ${messageFetch}${messageOverwrite}${messageMerge}
         return result;
     }
 
-    async getFiles(path: string, checkFunction: (path: FilePath) => Promise<boolean> | boolean) {
+    async getFiles(path: string, checkFunction: (path: FilePath) => Promise<boolean> | boolean, accumulator: string[] = []) {
         let w: ListedFiles;
         try {
             w = await this.app.vault.adapter.list(path);
         } catch (ex) {
             this._log(`Could not traverse(HiddenSync):${path}`, LOG_LEVEL_INFO);
             this._log(ex, LOG_LEVEL_VERBOSE);
-            return [];
+            return accumulator;
         }
-        let files = [] as string[];
+        
         for (const file of w.files) {
             if (!(await checkFunction(file as FilePath))) {
                 continue;
             }
-            files.push(file);
+            accumulator.push(file);
         }
         for (const v of w.folders) {
             if (!(await checkFunction(v as FilePath))) {
                 continue;
             }
-            files = files.concat(await this.getFiles(v, checkFunction));
+            // Pass accumulator down instead of concatenating
+            await this.getFiles(v, checkFunction, accumulator);
         }
-        return files;
+        return accumulator;
     }
     /*
     async getFiles_(path: string, ignoreList: string[], filter?: CustomRegExp[], ignoreFilter?: CustomRegExp[]) {

@@ -1,27 +1,59 @@
 # Current State (Handover)
 
-**Date**: February 1, 2026
-**Version**: 0.2.1
+**Date**: February 4, 2026
+**Version**: 0.2.7
 
 ## Status
-- **Build**: ✅ Passing and Optimized (Fast).
-- **Runtime**: ✅ Stable. Initialization crash fixed.
-- **Features**: ✅ Renamed "Replicate" to "Just-Sync now!".
-- **Documentation**: ✅ Updated `README.md`, `updates.md`, and docs structure.
+- **Build**: ✅ Passing and Optimized (Fast, ~1s).
+- **Runtime**: ✅ Stable. All known issues fixed.
+- **Tests**: ✅ 81 unit tests passing.
+- **Features**: 
+  - ✅ Renamed "Replicate" to "Just-Sync now!".
+  - ✅ Added "Server Control" panel (Desktop only) with Start Server button.
+  - ✅ Performance optimizations (8+ changes).
+  - ✅ UX improvements (Troubleshooting panel, readable status bar).
 
-## Recent History
-1.  **Crash Fix**: Restored `ModuleTargetFilter` to `src/main.ts` to fix `Error during vault initialisation process`.
-2.  **Versioning**: Bumped to 0.2.0, then 0.2.1 (build opt).
-3.  **Optimization**: Analyzed build logs and removed `prebuild` (i18n) and `terser` to speed up dev cycle.
+## Version History
+- **0.2.0**: Feature stripping (P2P, S3 removed), rebranding, crash fix.
+- **0.2.1**: Build optimization, Server Control feature.
+- **0.2.2**: Fixed child_process import, renamed log window to "Just Sync Log".
+- **0.2.3**: All log messages rebranded to "Just Sync".
+- **0.2.4**: Base64 comparison optimization, recursive array fix, DB fetch deduplication.
+- **0.2.5**: Connection check (DB/write permissions), renamed "Scram!" to "Troubleshooting", human-readable sync status.
+- **0.2.6**: Fixed status bar showing "Error" when connection fails.
+- **0.2.7**: I/O parallelization (4 optimizations in HiddenFileSync/ConfigSync).
 
-## Next Steps
-- **Validation on new machine**: Clone repo, run `npm install`, then `npm run build`.
-- **Server Connection**: User needs to verify connection to their actual Cloudflare/CouchDB instance (logs showed success, but user environment may vary).
-- **Future Features**:
-    - Automatic "Doctor" fixes for old settings?
-    - UI cleanup (remove unused settings tabs if any remain).
+## New Files Added
+- `src/common/serverCommand.ts` - Server command execution utility
+- `src/common/serverCommand.unit.test.ts` - Unit tests for server command
+- `docs/architecture.md` - Full architecture documentation
+- `install-plugin.mjs` - Build + deploy script
+
+## Key Settings Added
+In `src/lib/src/common/types.ts`:
+- `cloudflaredTunnelName: string` - Name of the Cloudflare tunnel to run (e.g. 'obsidian').
+
+## Performance Optimizations
+1. **Base64 comparison**: `isDocContentSame` now uses Uint8Array comparison.
+2. **Recursive array fix**: Uses accumulator pattern instead of O(N²) concat.
+3. **DB fetch dedup**: `loadPluginData` accepts pre-fetched document.
+4. **I/O parallelization**: Promise.all in `adoptCurrentStorageFilesAsProcessed`, `adoptCurrentDatabaseFilesAsProcessed`, `scanInternalFiles`, `applyData`.
+
+## UX Improvements
+1. **Connection Check**: Verifies DB exists and write permissions before connecting.
+2. **Troubleshooting Panel**: Renamed from "Scram!" for clarity.
+3. **Readable Status Bar**: Shows "Idle", "Syncing", "Error" with icons.
+4. **Error Status**: Status bar correctly shows "Error" on connection failure.
+
+## UI Changes
+In `src/modules/features/SettingDialogue/PaneRemoteConfig.ts`:
+- **Server Control Panel**:
+  - Input field: "Cloudflared Tunnel Name".
+  - "Start Server" button runs: `cloudflared tunnel run "<NAME>"`.
 
 ## How to Resume
 1.  Open workspace.
-2.  Check `.agent/technical_context.md` to understand the build system.
+2.  Check `docs/architecture.md` to understand the project structure.
 3.  Run `npm run build` to confirm environment.
+4.  Run `npm run test:unit` to verify tests pass.
+5.  Run `npm run build:deploy` to build and deploy to Obsidian.

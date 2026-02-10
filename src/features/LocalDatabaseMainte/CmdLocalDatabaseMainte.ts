@@ -104,29 +104,37 @@ export class LocalDatabaseMaintenance extends LiveSyncCommands {
             .filter(([key, e]) => e._deleted && e.data === "")
             .map(([key, e]) => e)
             .filter((e) => used.has(e._id));
-        for (const e of dataLostChunks) {
-            // Retrieve the data from the previous revision.
-            const doc = await this.database.get(e._id, { rev: e._rev, revs: true, revs_info: true, conflicts: true });
-            const history = doc._revs_info || [];
-            // Chunks are immutable. So, we can resurrect the chunk by copying the data from any of previous revisions.
-            let resurrected = null as null | string;
-            const availableRevs = history
-                .filter((e) => e.status == "available")
-                .map((e) => e.rev)
-                .sort((a, b) => getNoFromRev(a) - getNoFromRev(b));
-            for (const rev of availableRevs) {
-                const revDoc = await this.database.get(e._id, { rev: rev });
-                if (revDoc.type == "leaf" && revDoc.data !== "") {
-                    // Found the data.
-                    resurrected = revDoc.data;
-                    break;
+        
+        // Process chunks in parallel for better performance
+        const resurrectResults = await Promise.all(
+            dataLostChunks.map(async (e) => {
+                // Retrieve the data from the previous revision.
+                const doc = await this.database.get(e._id, { rev: e._rev, revs: true, revs_info: true, conflicts: true });
+                const history = doc._revs_info || [];
+                // Chunks are immutable. So, we can resurrect the chunk by copying the data from any of previous revisions.
+                let resurrected = null as null | string;
+                const availableRevs = history
+                    .filter((r) => r.status == "available")
+                    .map((r) => r.rev)
+                    .sort((a, b) => getNoFromRev(a) - getNoFromRev(b));
+                for (const rev of availableRevs) {
+                    const revDoc = await this.database.get(e._id, { rev: rev });
+                    if (revDoc.type == "leaf" && revDoc.data !== "") {
+                        // Found the data.
+                        resurrected = revDoc.data;
+                        break;
+                    }
                 }
-            }
-            // If the data is not found, we cannot resurrect the chunk, add it to the excessiveDeletions.
+                return { chunk: e, resurrected };
+            })
+        );
+        
+        // Separate successful resurrections from complete losses
+        for (const { chunk, resurrected } of resurrectResults) {
             if (resurrected !== null) {
-                excessiveDeletions.push({ ...e, data: resurrected, _deleted: false });
+                excessiveDeletions.push({ ...chunk, data: resurrected, _deleted: false });
             } else {
-                completelyLostChunks.push(e._id);
+                completelyLostChunks.push(chunk._id);
             }
         }
         // Chunks to be resurrected.

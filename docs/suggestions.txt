@@ -1,0 +1,125 @@
+Redundant Array Iterations in Chunk Transfer
+
+Start
+
+
+Description
+Chaining `filter` and `map` causes multiple iterations over the array.
+
+Location
+src/lib/src/pouchdb/chunks.ts:99
+
+Rationale
+Easy optimization to merge filter and map, reducing array traversals.
+
+Code context
+
+Verify event listener removal in ChunkFetcher
+
+Start
+
+
+Description
+Confirm whether event listeners are correctly dereferenced upon instance re-creation to prevent memory leaks.
+
+Location
+src/lib/src/managers/ChunkFetcher.ts:42
+
+Rationale
+The comment explicitly asks for verification of a specific behavior (dereferencing) which is a clear, actionable task. The code context provides the class structure to check.
+
+Code context
+
+Repeated RegExp Compilation
+
+Start
+
+
+Description
+`new RegExp` is instantiated on every call to `matchRegExp`, which is inefficient if called frequently.
+
+Location
+src/lib/src/common/utils.ts:666
+
+Rationale
+Compiling regexes is expensive. Using a cache (like LRU) or memoization for compiled regexes will prevent redundant compilation.
+
+Code context
+
+Sequential Database Requests in Garbage Collection
+
+Start
+
+
+Description
+The garbage collection process iterates through all document IDs and fetches them sequentially.
+
+Location
+src/features/LocalDatabaseMainte/CmdLocalDatabaseMainte.ts:610
+
+Rationale
+Similar to the analysis loop, sequential fetching is slow. Batch fetching using `allDocs` or `bulkGet` is recommended.
+
+Code context
+
+Quadratic Complexity in Chunk Filtering
+
+Start
+
+
+Description
+Nested `filter` and `some` calls create an O(N*M) complexity operation, which can be extremely slow for large datasets.
+
+Location
+src/lib/src/pouchdb/chunks.ts:229
+
+Rationale
+This is a textbook O(N^2) issue. Replacing the inner arrays with Sets will reduce complexity to O(N+M).
+
+Code context
+
+Redundant Array Iterations in Chunk Processing
+
+Start
+
+
+Description
+Chaining `filter` and `map` causes multiple iterations over the array.
+
+Location
+src/lib/src/pouchdb/chunks.ts:114
+
+Rationale
+Easy optimization to merge filter and map, reducing array traversals.
+
+Code context
+
+Regex Compilation Inside Loop
+
+Start
+
+
+Description
+A new RegExp is created in every iteration of the loop to replace placeholders.
+
+Location
+src/lib/src/common/i18n.ts:93
+
+Rationale
+This can be optimized by parsing the string once or using a more efficient replacement strategy that doesn't require compiling regexes in a loop.
+
+Code context
+
+Redundant Array Iterations in Chunk Resurrection
+
+Start
+
+
+Description
+Chaining `filter` and `map` causes multiple iterations over the array.
+
+Location
+src/features/LocalDatabaseMainte/CmdLocalDatabaseMainte.ts:100
+
+Rationale
+This can be optimized into a single pass using `reduce` or a simple loop, reducing memory overhead and CPU cycles.

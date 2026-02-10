@@ -537,8 +537,9 @@ export class ConfigSync extends LiveSyncCommands {
         pluginList.set(this.pluginList);
         await this.updatePluginList(showMessage);
     }
-    async loadPluginData(path: FilePathWithPrefix): Promise<PluginDataExDisplay | false> {
-        const wx = await this.localDatabase.getDBEntry(path, undefined, false, false);
+    async loadPluginData(path: FilePathWithPrefix, entry?: AnyEntry): Promise<PluginDataExDisplay | false> {
+        // Use provided entry if available, otherwise fetch from database
+        const wx = entry || await this.localDatabase.getDBEntry(path, undefined, false, false);
         if (wx) {
             const data = deserialize(getDocDataAsArray(wx.data), {}) as PluginDataEx;
             const xFiles = [] as PluginDataExFile[];
@@ -580,7 +581,8 @@ export class ConfigSync extends LiveSyncCommands {
             const oldEntry = this.pluginList.find((e) => e.documentPath == path);
             if (oldEntry && oldEntry.mtime == plugin.mtime) return [];
             try {
-                const pluginData = await this.loadPluginData(path);
+                // Pass the already-fetched plugin document to avoid redundant DB fetch
+                const pluginData = await this.loadPluginData(path, plugin);
                 if (pluginData) {
                     let newList = [...this.pluginList];
                     newList = newList.filter((x) => x.documentPath != pluginData.documentPath);
@@ -614,7 +616,8 @@ export class ConfigSync extends LiveSyncCommands {
             const oldEntry = this.pluginList.find((e) => e.documentPath == path);
             if (oldEntry && oldEntry.mtime == plugin.mtime) return [];
             try {
-                const pluginData = await this.loadPluginData(path);
+                // Pass the already-fetched plugin document to avoid redundant DB fetch
+                const pluginData = await this.loadPluginData(path, plugin);
                 if (pluginData) {
                     let newList = [...this.pluginList];
                     newList = newList.filter((x) => x.documentPath != pluginData.documentPath);
@@ -1075,7 +1078,8 @@ export class ConfigSync extends LiveSyncCommands {
                 throw "Not found on database";
             }
             const loadedData = deserialize(getDocDataAsArray(dx.data), {}) as PluginDataEx;
-            for (const f of loadedData.files) {
+            // Parallelize file writes for better performance
+            const writePromises = loadedData.files.map(async (f) => {
                 this._log(`Applying ${f.filename} of ${data.displayName || data.name}..`);
                 try {
                     // console.dir(f);
@@ -1092,7 +1096,8 @@ export class ConfigSync extends LiveSyncCommands {
                     this._log(`Applying ${f.filename} of ${data.displayName || data.name}.. Failed`);
                     this._log(ex, LOG_LEVEL_VERBOSE);
                 }
-            }
+            });
+            await Promise.all(writePromises);
             const uPath = `${baseDir}/${loadedData.files[0].filename}` as FilePath;
             await this.storeCustomizationFiles(uPath);
             await this.updatePluginList(true, uPath);

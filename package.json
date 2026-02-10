@@ -1,6 +1,6 @@
 {
     "name": "just-sync",
-    "version": "0.2.0",
+    "version": "0.2.7",
     "description": "Modified version of Self-hosted LiveSync - Just Sync.",
     "main": "main.js",
     "type": "module",
@@ -17,6 +17,8 @@
         "prebuild_disabled": "npm run bakei18n",
         "build": "node esbuild.config.mjs production",
         "build:with-i18n": "npm run bakei18n && npm run build",
+        "build:deploy": "npm run build && node install-plugin.mjs",
+        "deploy": "node install-plugin.mjs",
         "buildDev": "node esbuild.config.mjs dev",
         "lint": "eslint src",
         "svelte-check": "svelte-check --tsconfig ./tsconfig.json",

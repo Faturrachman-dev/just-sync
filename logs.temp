@@ -1,0 +1,20 @@
+2/4/2026, 9:09:32 AM->[Q_]  Loading plugin...
+2/4/2026, 9:09:32 AM->[Q_]  Self-hosted LiveSync v0.2.0 0.2.0
+2/4/2026, 9:09:32 AM->Log window opened
+2/4/2026, 9:09:32 AM->LiveSync has updated, please read the changelog!
+2/4/2026, 9:09:32 AM->[W_]  Waiting for ready...
+2/4/2026, 9:09:32 AM->Opening Database...
+2/4/2026, 9:09:32 AM->Database is now ready.
+2/4/2026, 9:09:32 AM->[h_]  Initialize and checking database files
+2/4/2026, 9:09:32 AM->[h_]  Checking deleted files
+2/4/2026, 9:09:32 AM->[h_]  Synchronising...
+2/4/2026, 9:09:32 AM->[h_]  UPDATE DATABASE: Nothing to do
+2/4/2026, 9:09:32 AM->[h_]  UPDATE STORAGE
+2/4/2026, 9:09:32 AM->[h_]  SYNC DATABASE AND STORAGE
+2/4/2026, 9:09:32 AM->[h_]  UPDATE STORAGE: DONE:1, FAILED:0, LAST:2
+2/4/2026, 9:09:32 AM->[h_]  Initialized, NOW TRACKING!
+2/4/2026, 9:09:32 AM->[h_]  UPDATE STORAGE: DONE:1, FAILED:0, LAST:2
+SYNC DATABASE AND STORAGE All done: DONE:5, FAILED:0
+2/4/2026, 9:09:33 AM->The request may have failed. The reason sent by the server: 530: 530
+2/4/2026, 9:09:33 AM->Could not connect to https://sync.faturismee.online/obsidian-sync:SyntaxError:Unexpected token '<', "<!doctype "... is not valid JSON
+2/4/2026, 9:09:33 AM->Failed to count compromised chunks in remote database

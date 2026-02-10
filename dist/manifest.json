@@ -1,7 +1,7 @@
 {
     "id": "just-sync",
     "name": "Just Sync",
-    "version": "0.2.0",
+    "version": "0.2.7",
     "minAppVersion": "0.9.12",
     "description": "Modified version of Self-hosted LiveSync - Just Sync.",
     "author": "vorotamoroz",

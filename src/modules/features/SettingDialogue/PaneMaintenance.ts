@@ -68,7 +68,9 @@ export function paneMaintenance(
         visibleOnly(isRemoteLocked)
     );
 
-    void addPanel(paneEl, "Scram!").then((paneEl) => {
+    void addPanel(paneEl, "Troubleshooting").then((paneEl) => {
+        paneEl.createEl("p", { text: "Use these actions when sync is stuck or behaving unexpectedly." });
+        
         new Setting(paneEl)
             .setName("Lock Server")
             .setDesc("Lock the remote server to prevent synchronization with other devices.")
@@ -84,8 +86,8 @@ export function paneMaintenance(
             .addOnUpdate(this.onlyOnCouchDBOrMinIO);
 
         new Setting(paneEl)
-            .setName("Emergency restart")
-            .setDesc("Disables all synchronization and restart.")
+            .setName("Emergency Restart")
+            .setDesc("Use this if sync is completely stuck or errored. Disables all synchronization and restarts.")
             .addButton((button) =>
                 button
                     .setButtonText("Flag and restart")
@@ -97,11 +99,13 @@ export function paneMaintenance(
                     })
             );
     });
+    
+    void addPanel(paneEl, "Database Rebuild").then((paneEl) => {
+        paneEl.createEl("p", { text: "Use these actions to rebuild databases when there are conflicts or data issues." });
 
-    void addPanel(paneEl, "Reset Synchronisation information").then((paneEl) => {
         new Setting(paneEl)
-            .setName("Reset Synchronisation on This Device")
-            .setDesc("Restore or reconstruct local database from remote.")
+            .setName("Rebuild Local Database")
+            .setDesc("Use this when local files are corrupted. Fetches all data from remote server and rebuilds local database.")
             .addButton((button) =>
                 button
                     .setButtonText("Schedule and Restart")
@@ -113,8 +117,8 @@ export function paneMaintenance(
                     })
             );
         new Setting(paneEl)
-            .setName("Overwrite Server Data with This Device's Files")
-            .setDesc("Rebuild local and remote database with local files.")
+            .setName("Rebuild Remote Database")
+            .setDesc("Use this when remote database is corrupted or out of sync. Pushes all local files to server.")
             .addButton((button) =>
                 button
                     .setButtonText("Schedule and Restart")

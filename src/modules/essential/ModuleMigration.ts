@@ -267,10 +267,22 @@ export class ModuleMigration extends AbstractModule {
             : 0;
         if (localCompromised === false) {
             Logger(`Failed to count compromised chunks in local database`, LOG_LEVEL_NOTICE);
+            // Set sync status to ERRORED when connection fails
+            const remote = this.services.replicator.getActiveReplicator();
+            if (remote) {
+                remote.syncStatus = "ERRORED";
+                remote.updateInfo();
+            }
             return false;
         }
         if (remoteCompromised === false) {
             Logger(`Failed to count compromised chunks in remote database`, LOG_LEVEL_NOTICE);
+            // Set sync status to ERRORED when connection fails
+            const remote = this.services.replicator.getActiveReplicator();
+            if (remote) {
+                remote.syncStatus = "ERRORED";
+                remote.updateInfo();
+            }
             return false;
         }
         if (remoteCompromised === 0 && localCompromised === 0) {

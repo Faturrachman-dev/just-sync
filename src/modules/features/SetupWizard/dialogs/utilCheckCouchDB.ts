@@ -276,6 +276,50 @@ export const checkConfig = async (editingSettings: ObsidianLiveSyncSettings) => 
                 addSuccess($msg("obsidianLiveSyncSettingTab.okCorsOriginMatched"));
             }
         }
+        // Check database existence and write permissions
+        addMessage($msg("obsidianLiveSyncSettingTab.msgDatabaseAccessCheck", { db: editingSettings.couchDB_DBNAME }) || `Checking database '${editingSettings.couchDB_DBNAME}' access...`, ["ob-btn-config-head"]);
+        try {
+            const dbCheckUrl = `${editingSettings.couchDB_URI}/${editingSettings.couchDB_DBNAME}`;
+            const dbResponse = await requestToCouchDBWithCredentials(
+                dbCheckUrl,
+                credential,
+                undefined,
+                undefined,
+                undefined,
+                "GET",
+                customHeaders
+            );
+            if (dbResponse.status === 200) {
+                addSuccess($msg("obsidianLiveSyncSettingTab.okDatabaseExists") || "Database exists and is accessible.");
+                
+                // Test write permission with a test document
+                const testDocId = "_local/just-sync-connection-test";
+                const testDoc = { _id: testDocId, test: true, timestamp: Date.now() };
+                const writeTestUrl = `${editingSettings.couchDB_URI}/${editingSettings.couchDB_DBNAME}/${testDocId}`;
+                const writeResponse = await requestToCouchDBWithCredentials(
+                    writeTestUrl,
+                    credential,
+                    undefined,
+                    testDoc,
+                    undefined,
+                    "PUT",
+                    customHeaders
+                );
+                if (writeResponse.status === 200 || writeResponse.status === 201) {
+                    addSuccess($msg("obsidianLiveSyncSettingTab.okWritePermission") || "Write permission verified.");
+                } else {
+                    addErrorMessage($msg("obsidianLiveSyncSettingTab.errNoWritePermission") || "No write permission to database.");
+                }
+            } else if (dbResponse.status === 404) {
+                addErrorMessage($msg("obsidianLiveSyncSettingTab.errDatabaseNotFound") || "Database does not exist. Please create it first.");
+            } else {
+                addErrorMessage($msg("obsidianLiveSyncSettingTab.errDatabaseAccessFailed", { status: dbResponse.status }) || `Database access check failed (${dbResponse.status}).`);
+            }
+        } catch (dbCheckEx) {
+            addErrorMessage($msg("obsidianLiveSyncSettingTab.errDatabaseCheckFailed") || "Failed to check database access.");
+            Logger(dbCheckEx);
+        }
+        
         addMessage($msg("obsidianLiveSyncSettingTab.msgDone"), ["ob-btn-config-head"]);
         addMessage($msg("obsidianLiveSyncSettingTab.msgConnectionProxyNote"), ["ob-btn-config-info"]);
         addMessage($msg("obsidianLiveSyncSettingTab.logCheckingConfigDone"));
