@@ -1,5 +1,37 @@
 # Updates
 
+## 0.2.11
+- **UX**: Removed deprecated MinIO/S3/R2 Object Storage backend (CouchDB is now the only supported remote sync method).
+- **UX**: Removed deprecated P2P Sync backend (Peer-to-Peer sync is no longer available).
+- **UX**: Cleaned up Settings UI by removing:
+  - MinIO/S3/R2 configuration panel
+  - Peer-to-Peer configuration panel
+  - MinIO-specific journal history controls (Reset journal received/sent history, Reset/Purge/Wipe journal counter)
+  - "Remote Database Tweak (In sunset)" panel
+- **UX**: Simplified visibility helpers from 5 to 1 (only `onlyOnCouchDB` remains).
+- **UX**: Moved "Enable compression for transferred data" toggle from Patches panel to Advanced panel.
+- **Cleanup**: Removed unused imports and references to `REMOTE_MINIO` and `REMOTE_P2P` across settings modules.
+- **Cleanup**: Removed orphaned utility functions `getP2PConfigSummary` and `getBucketConfigSummary` from settingUtils.
+- **Note**: This release focuses exclusively on CouchDB sync — if you were using MinIO or P2P, you'll need to migrate to CouchDB before upgrading.
+
+## 0.2.10
+- **UX**: Replaced Docker dependency with two lightweight CouchDB backends:
+  - **PouchDB Server**: ~15 MB npm package, instant start, no Docker needed.
+  - **Native CouchDB**: Detects and manages OS-installed CouchDB (Windows Service, systemd, Homebrew).
+- **UX**: Backend selector dropdown in Server Control panel.
+- **UX**: One-click Install button for PouchDB Server (npm install -g).
+- **UX**: Auto-detect native CouchDB installations across Windows/Linux/macOS.
+- **New**: `pouchdbServer.ts` — manages PouchDB Server child process lifecycle.
+- **New**: `nativeCouchDB.ts` — detects and controls native CouchDB services.
+- **Refactor**: `serviceControl.ts` is now backend-agnostic (dispatches to selected backend).
+
+## 0.2.9
+- **UX**: Enhanced Server Control panel with CouchDB Docker management (start/stop/create containers).
+- **UX**: Added one-click CouchDB auto-configuration (CORS, auth, size limits) via HTTP API.
+- **UX**: Added "Start All Services" button to launch CouchDB + Cloudflared tunnel together.
+- **UX**: Service status dashboard shows live state of CouchDB container and tunnel.
+- **New**: `serviceControl.ts` module for managing Docker containers and CouchDB configuration programmatically.
+
 ## 0.2.8
 - **Security**: Replaced innerHTML with DOM API (createEl, textContent) in settings and modals.
 - **Compliance**: Moved inline styles to CSS classes for dialogs, conflict resolver, and plugin sync modal.

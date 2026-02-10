@@ -6,12 +6,10 @@ import {
     FLAGMD_REDFLAG2_HR,
     FLAGMD_REDFLAG3_HR,
     REMOTE_COUCHDB,
-    REMOTE_MINIO,
     type ConfigLevel,
     LEVEL_POWER_USER,
     LEVEL_ADVANCED,
     LEVEL_EDGE_CASE,
-    REMOTE_P2P,
 } from "../../../lib/src/common/types.ts";
 import { delay, isObjectDifferent, sizeToHumanReadable } from "../../../lib/src/common/utils.ts";
 import { versionNumberString2Number } from "../../../lib/src/string_and_binary/convert.ts";
@@ -522,32 +520,12 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
 
     enableOnlySyncDisabled = enableOnly(() => !this.isAnySyncEnabled());
 
-    onlyOnP2POrCouchDB = () =>
-        ({
-            visibility:
-                this.isConfiguredAs("remoteType", REMOTE_P2P) || this.isConfiguredAs("remoteType", REMOTE_COUCHDB),
-        }) as OnUpdateResult;
-
     onlyOnCouchDB = () =>
         ({
             visibility: this.isConfiguredAs("remoteType", REMOTE_COUCHDB),
         }) as OnUpdateResult;
-    onlyOnMinIO = () =>
-        ({
-            visibility: this.isConfiguredAs("remoteType", REMOTE_MINIO),
-        }) as OnUpdateResult;
-    onlyOnOnlyP2P = () =>
-        ({
-            visibility: this.isConfiguredAs("remoteType", REMOTE_P2P),
-        }) as OnUpdateResult;
-    onlyOnCouchDBOrMinIO = () =>
-        ({
-            visibility:
-                this.isConfiguredAs("remoteType", REMOTE_COUCHDB) || this.isConfiguredAs("remoteType", REMOTE_MINIO),
-        }) as OnUpdateResult;
     // E2EE Function
     checkWorkingPassphrase = async (): Promise<boolean> => {
-        if (this.editingSettings.remoteType == REMOTE_MINIO) return true;
 
         const settingForCheck: RemoteDBSettings = {
             ...this.editingSettings,

@@ -7,38 +7,11 @@ import {
 } from "../../../lib/src/common/types";
 import {
     pickCouchDBSyncSettings,
-    pickBucketSyncSettings,
-    pickP2PSyncSettings,
     pickEncryptionSettings,
 } from "../../../lib/src/common/utils";
 import { getConfig, type AllSettingItemKey } from "./settingConstants";
 import { LOG_LEVEL_NOTICE, LOG_LEVEL_VERBOSE, Logger } from "octagonal-wheels/common/logger";
 
-/**
- * Generates a summary of P2P configuration settings
- * @param setting Settings object
- * @param additional Additional summary information to include
- * @param showAdvanced Whether to include advanced settings
- * @returns Summary object
- */
-export function getP2PConfigSummary(
-    setting: ObsidianLiveSyncSettings,
-    additional: Record<string, string> = {},
-    showAdvanced = false
-) {
-    const settingTable: Partial<ObsidianLiveSyncSettings> = pickP2PSyncSettings(setting);
-    return { ...getSummaryFromPartialSettings({ ...settingTable }, showAdvanced), ...additional };
-}
-/**
- * Generates a summary of Object Storage configuration settings
- * @param setting Settings object
- * @param showAdvanced Whether to include advanced settings
- * @returns Summary object
- */
-export function getBucketConfigSummary(setting: ObsidianLiveSyncSettings, showAdvanced = false) {
-    const settingTable: Partial<ObsidianLiveSyncSettings> = pickBucketSyncSettings(setting);
-    return getSummaryFromPartialSettings(settingTable, showAdvanced);
-}
 /**
  * Generates a summary of CouchDB configuration settings
  * @param setting Settings object

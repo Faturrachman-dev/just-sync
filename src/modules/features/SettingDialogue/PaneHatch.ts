@@ -7,7 +7,6 @@ import {
     LOG_LEVEL_VERBOSE,
     type LoadedEntry,
     REMOTE_COUCHDB,
-    REMOTE_MINIO,
     type MetaEntry,
     type FilePath,
     DEFAULT_SETTINGS,
@@ -108,9 +107,6 @@ export function paneHatch(this: ObsidianLiveSyncSettingTab, paneEl: HTMLElement,
                                 error: "Requesting information from the remote CouchDB has failed. If you are using IBM Cloudant, this is normal behaviour.",
                             };
                         }
-                    } else if (this.editingSettings.remoteType == REMOTE_MINIO) {
-                        responseConfig = { error: "Object Storage Synchronisation" };
-                        //
                     }
                     const defaultKeys = Object.keys(DEFAULT_SETTINGS) as (keyof ObsidianLiveSyncSettings)[];
                     const pluginConfig = JSON.parse(JSON.stringify(this.editingSettings)) as ObsidianLiveSyncSettings;
@@ -140,18 +136,11 @@ export function paneHatch(this: ObsidianLiveSyncSettingTab, paneEl: HTMLElement,
                     pluginConfig.region = redact(pluginConfig.region);
                     pluginConfig.bucket = redact(pluginConfig.bucket);
                     pluginConfig.pluginSyncExtendedSetting = {};
-                    pluginConfig.P2P_AppID = redact(pluginConfig.P2P_AppID);
-                    pluginConfig.P2P_passphrase = redact(pluginConfig.P2P_passphrase);
-                    pluginConfig.P2P_roomID = redact(pluginConfig.P2P_roomID);
-                    pluginConfig.P2P_relays = redact(pluginConfig.P2P_relays);
                     pluginConfig.jwtKey = redact(pluginConfig.jwtKey);
                     pluginConfig.jwtSub = redact(pluginConfig.jwtSub);
                     pluginConfig.jwtKid = redact(pluginConfig.jwtKid);
                     pluginConfig.bucketCustomHeaders = redact(pluginConfig.bucketCustomHeaders);
                     pluginConfig.couchDB_CustomHeaders = redact(pluginConfig.couchDB_CustomHeaders);
-                    pluginConfig.P2P_turnCredential = redact(pluginConfig.P2P_turnCredential);
-                    pluginConfig.P2P_turnUsername = redact(pluginConfig.P2P_turnUsername);
-                    pluginConfig.P2P_turnServers = `(${pluginConfig.P2P_turnServers.split(",").length} servers configured)`;
                     const endpoint = pluginConfig.endpoint;
                     if (endpoint == "") {
                         pluginConfig.endpoint = "Not configured or AWS";

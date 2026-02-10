@@ -35,6 +35,10 @@ export function paneAdvanced(this: ObsidianLiveSyncSettingTab, paneEl: HTMLEleme
             clampMin: 10,
             onUpdate: this.onlyOnCouchDB,
         });
+
+        new Setting(paneEl)
+            .setClass("wizardHidden")
+            .autoWireToggle("enableCompression", { onUpdate: this.onlyOnCouchDB });
         // new Setting(paneEl)
         //     .setClass("wizardHidden")
         //     .autoWireToggle("sendChunksBulk", { onUpdate: onlyOnCouchDB })

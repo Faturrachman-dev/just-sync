@@ -504,6 +504,24 @@ div.workspace-leaf-content[data-type=bases]  .livesync-status {
     min-width: 300px;
 }
 
+/* Service Dashboard */
+.sls-service-dashboard {
+    padding: 8px 12px;
+    margin: 8px 0 12px;
+    border-radius: 6px;
+    background-color: var(--background-secondary);
+    border: 1px solid var(--background-modifier-border);
+}
+
+.sls-service-row {
+    padding: 4px 0;
+    font-size: 0.9em;
+}
+
+.sls-service-dim {
+    opacity: 0.5;
+}
+
 /* Guideline compliance: CSS classes replacing inline styles */
 .sls-selectable-text {
     user-select: text;
