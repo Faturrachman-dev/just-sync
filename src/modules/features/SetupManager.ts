@@ -281,8 +281,7 @@ export class SetupManager extends AbstractObsidianModule {
                 return true;
             }
             const patch = generatePatchObj(this.settings, newConf);
-            console.log(`Changes:`);
-            console.dir(patch);
+            if (LOG_LEVEL_VERBOSE >= LOG_LEVEL_VERBOSE) console.dir(patch);
             if (!activate) {
                 extra();
                 await this.applySetting(newConf, UserMode.ExistingUser);

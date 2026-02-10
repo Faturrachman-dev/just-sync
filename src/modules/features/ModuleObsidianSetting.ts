@@ -11,7 +11,7 @@ import {
     SALT_OF_PASSPHRASE,
     SETTING_KEY_P2P_DEVICE_NAME,
 } from "../../lib/src/common/types";
-import { LOG_LEVEL_NOTICE, LOG_LEVEL_URGENT } from "octagonal-wheels/common/logger";
+import { LOG_LEVEL_NOTICE, LOG_LEVEL_URGENT, LOG_LEVEL_VERBOSE } from "octagonal-wheels/common/logger";
 import { $msg, setLang } from "../../lib/src/common/i18n.ts";
 import { isCloudantURI } from "../../lib/src/pouchdb/utils_couchdb.ts";
 import { getLanguage } from "@/deps.ts";
@@ -113,7 +113,7 @@ export class ModuleObsidianSettings extends AbstractObsidianModule {
         const settings = { ...this.settings };
         settings.deviceAndVaultName = "";
         if (settings.P2P_DevicePeerName && settings.P2P_DevicePeerName.trim() !== "") {
-            console.log("Saving device peer name to small config");
+            this._log("Saving device peer name to small config", LOG_LEVEL_VERBOSE);
             this.services.config.setSmallConfig(SETTING_KEY_P2P_DEVICE_NAME, settings.P2P_DevicePeerName.trim());
             settings.P2P_DevicePeerName = "";
         }

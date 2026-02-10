@@ -503,3 +503,47 @@ div.workspace-leaf-content[data-type=bases]  .livesync-status {
     width: 100%;
     min-width: 300px;
 }
+
+/* Guideline compliance: CSS classes replacing inline styles */
+.sls-selectable-text {
+    user-select: text;
+    -webkit-user-select: text;
+}
+
+.sls-hidden {
+    display: none;
+}
+
+.sls-dialogue-info-hidden {
+    display: none;
+}
+
+.sls-dialogue-control-wrap {
+    flex-wrap: wrap;
+}
+
+.sls-dialogue-control-wide {
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex-grow: 1;
+}
+
+.sls-dialogue-btn-wide {
+    flex-grow: 1;
+    width: 100%;
+}
+
+.sls-conflict-btn {
+    margin-right: 4px;
+}
+
+.sls-plugin-dialog-content {
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.sls-troubleshoot-min-height {
+    /* Applied dynamically via JS to preserve current height during loading */
+}

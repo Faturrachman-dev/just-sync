@@ -178,7 +178,7 @@ ${stringifyYaml({
     version: this.manifestVersion,
     ...pluginConfig,
 })}`;
-                    console.log(msgConfig);
+                    Logger(`Generated report (${msgConfig.length} chars)`, LOG_LEVEL_VERBOSE);
                     if ((await this.services.UI.promptCopyToClipboard("Generated report", msgConfig)) == true) {
                         // await navigator.clipboard.writeText(msgConfig);
                         // Logger(

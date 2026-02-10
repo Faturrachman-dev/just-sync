@@ -1,5 +1,11 @@
 # Updates
 
+## 0.2.8
+- **Security**: Replaced innerHTML with DOM API (createEl, textContent) in settings and modals.
+- **Compliance**: Moved inline styles to CSS classes for dialogs, conflict resolver, and plugin sync modal.
+- **Cleanup**: Replaced runtime console.log with Logger calls at appropriate log levels.
+- **Branding**: Fixed remaining "Self-hosted LiveSync" references in suspend/resume messages.
+
 ## 0.2.7
 - **Performance**: Parallelized file scanning operations (adoptCurrentStorageFilesAsProcessed, adoptCurrentDatabaseFilesAsProcessed).
 - **Performance**: Fixed scanInternalFiles to properly parallelize ignore checks.

@@ -143,11 +143,15 @@ export class DocumentHistoryModal extends Modal {
         this.currentDeleted = false;
         if (w === false) {
             this.currentDeleted = true;
-            this.info.innerHTML = "";
-            this.contentView.innerHTML = `Could not read this revision<br>(${rev})`;
+            this.info.empty();
+            this.contentView.empty();
+            this.contentView.createSpan({ text: "Could not read this revision" });
+            this.contentView.createEl("br");
+            this.contentView.createSpan({ text: `(${rev})` });
         } else {
             this.currentDoc = w;
-            this.info.innerHTML = `Modified:${new Date(w.mtime).toLocaleString()}`;
+            this.info.empty();
+            this.info.textContent = `Modified:${new Date(w.mtime).toLocaleString()}`;
             let result = undefined;
             const w1data = readDocument(w);
             this.currentDeleted = !!w.deleted;
@@ -209,6 +213,7 @@ export class DocumentHistoryModal extends Modal {
                 }
             }
             if (result == undefined) result = typeof w1data == "string" ? escapeStringToHTML(w1data) : "Binary file";
+            // Safe: all text content is pre-escaped via escapeStringToHTML
             this.contentView.innerHTML =
                 (this.currentDeleted ? "(At this revision, the file has been deleted)\n" : "") + result;
         }
@@ -303,7 +308,6 @@ export class DocumentHistoryModal extends Modal {
         const { contentEl } = this;
         contentEl.empty();
         this.BlobURLs.forEach((value) => {
-            console.log(value);
             if (value) URL.revokeObjectURL(value);
         });
     }

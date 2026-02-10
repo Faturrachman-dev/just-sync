@@ -90,26 +90,33 @@ export class ConflictResolveModal extends Modal {
             new Date(this.result.left.mtime).toLocaleString() + (this.result.left.deleted ? " (Deleted)" : "");
         const date2 =
             new Date(this.result.right.mtime).toLocaleString() + (this.result.right.deleted ? " (Deleted)" : "");
-        div2.innerHTML = `<span class='deleted'><span class='conflict-dev-name'>${this.localName}</span>: ${date1}</span><br>
-<span class='added'><span class='conflict-dev-name'>${this.remoteName}</span>: ${date2}</span><br>`;
-        contentEl.createEl("button", { text: `Use ${this.localName}` }, (e) =>
+        const leftSpan = div2.createSpan({ cls: "deleted" });
+        leftSpan.createSpan({ text: this.localName, cls: "conflict-dev-name" });
+        leftSpan.appendText(`: ${date1}`);
+        div2.createEl("br");
+        const rightSpan = div2.createSpan({ cls: "added" });
+        rightSpan.createSpan({ text: this.remoteName, cls: "conflict-dev-name" });
+        rightSpan.appendText(`: ${date2}`);
+        div2.createEl("br");
+        contentEl.createEl("button", { text: `Use ${this.localName}`, cls: "sls-conflict-btn" }, (e) =>
             e.addEventListener("click", () => this.sendResponse(this.result.right.rev))
-        ).style.marginRight = "4px";
-        contentEl.createEl("button", { text: `Use ${this.remoteName}` }, (e) =>
+        );
+        contentEl.createEl("button", { text: `Use ${this.remoteName}`, cls: "sls-conflict-btn" }, (e) =>
             e.addEventListener("click", () => this.sendResponse(this.result.left.rev))
-        ).style.marginRight = "4px";
+        );
         if (!this.pluginPickMode) {
-            contentEl.createEl("button", { text: "Concat both" }, (e) =>
+            contentEl.createEl("button", { text: "Concat both", cls: "sls-conflict-btn" }, (e) =>
                 e.addEventListener("click", () => this.sendResponse(LEAVE_TO_SUBSEQUENT))
-            ).style.marginRight = "4px";
+            );
         }
-        contentEl.createEl("button", { text: !this.pluginPickMode ? "Not now" : "Cancel" }, (e) =>
+        contentEl.createEl("button", { text: !this.pluginPickMode ? "Not now" : "Cancel", cls: "sls-conflict-btn" }, (e) =>
             e.addEventListener("click", () => this.sendResponse(CANCELLED))
-        ).style.marginRight = "4px";
+        );
         diff = diff.replace(/\n/g, "<br>");
         if (diff.length > 100 * 1024) {
             div.innerText = "(Too large diff to display)";
         } else {
+            // Safe: all text content is pre-escaped via escapeStringToHTML
             div.innerHTML = diff;
         }
     }

@@ -69,10 +69,10 @@ export class ModuleObsidianMenu extends AbstractObsidianModule {
             callback: async () => {
                 if (this.services.appLifecycle.isSuspended()) {
                     this.services.appLifecycle.setSuspended(false);
-                    this._log("Self-hosted LiveSync resumed", LOG_LEVEL_NOTICE);
+                    this._log("Just Sync resumed", LOG_LEVEL_NOTICE);
                 } else {
                     this.services.appLifecycle.setSuspended(true);
-                    this._log("Self-hosted LiveSync suspended", LOG_LEVEL_NOTICE);
+                    this._log("Just Sync suspended", LOG_LEVEL_NOTICE);
                 }
                 await this.services.setting.realiseSetting();
                 await this.services.setting.saveSettingData();

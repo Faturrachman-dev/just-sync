@@ -187,9 +187,7 @@ export class MessageBox<T extends readonly string[]> extends AutoClosableModal {
     onOpen() {
         const { contentEl } = this;
         this.titleEl.setText(this.title);
-        const div = contentEl.createDiv();
-        div.style.userSelect = "text";
-        div.style["webkitUserSelect"] = "text";
+        const div = contentEl.createDiv({ cls: "sls-selectable-text" });
         void MarkdownRenderer.render(this.plugin.app, this.contentMd, div, "/", this.plugin);
         const buttonSetting = new Setting(contentEl);
         const labelWrapper = contentEl.createDiv();
@@ -198,21 +196,18 @@ export class MessageBox<T extends readonly string[]> extends AutoClosableModal {
         labelEl.addClass("sls-dialogue-note-countdown");
         if (!this.timeout || !this.timer) {
             labelWrapper.empty();
-            labelWrapper.style.display = "none";
+            labelWrapper.addClass("sls-hidden");
         }
 
-        buttonSetting.infoEl.style.display = "none";
-        buttonSetting.controlEl.style.flexWrap = "wrap";
+        buttonSetting.infoEl.addClass("sls-dialogue-info-hidden");
+        buttonSetting.controlEl.addClass("sls-dialogue-control-wrap");
         if (this.wideButton) {
-            buttonSetting.controlEl.style.flexDirection = "column";
-            buttonSetting.controlEl.style.alignItems = "center";
-            buttonSetting.controlEl.style.justifyContent = "center";
-            buttonSetting.controlEl.style.flexGrow = "1";
+            buttonSetting.controlEl.addClass("sls-dialogue-control-wide");
         }
         contentEl.addEventListener("click", () => {
             if (this.timer) {
                 labelWrapper.empty();
-                labelWrapper.style.display = "none";
+                labelWrapper.addClass("sls-hidden");
                 clearInterval(this.timer);
                 this.timer = undefined;
                 this.defaultButtonComponent?.setButtonText(`${this.defaultAction}`);
@@ -234,8 +229,7 @@ export class MessageBox<T extends readonly string[]> extends AutoClosableModal {
                     btn.setCta();
                 }
                 if (this.wideButton) {
-                    btn.buttonEl.style.flexGrow = "1";
-                    btn.buttonEl.style.width = "100%";
+                    btn.buttonEl.addClass("sls-dialogue-btn-wide");
                 }
                 return btn;
             });

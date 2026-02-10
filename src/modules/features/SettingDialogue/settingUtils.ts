@@ -12,7 +12,7 @@ import {
     pickEncryptionSettings,
 } from "../../../lib/src/common/utils";
 import { getConfig, type AllSettingItemKey } from "./settingConstants";
-import { LOG_LEVEL_NOTICE, Logger } from "octagonal-wheels/common/logger";
+import { LOG_LEVEL_NOTICE, LOG_LEVEL_VERBOSE, Logger } from "octagonal-wheels/common/logger";
 
 /**
  * Generates a summary of P2P configuration settings
@@ -124,7 +124,7 @@ export async function migrateDatabases(operationName: string, from: PouchDB.Data
 
     const dbTo2 = await openTo();
     const info2 = await dbTo2.info(); // ensure created
-    console.log(info2);
+    Logger(`Migration DB info: ${JSON.stringify(info2)}`, LOG_LEVEL_VERBOSE);
     Logger(`Re-created destination database for migration: ${operationName}.`, LOG_LEVEL_NOTICE, "migration");
 
     const info = await from.info();
