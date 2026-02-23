@@ -671,6 +671,36 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
         this.menuEl = menuWrapper.createDiv("");
         this.menuEl.addClass("sls-setting-menu");
         const menuTabs = this.menuEl.querySelectorAll(".sls-setting-label");
+        const overflowPaneOptions = new Map<string, string>();
+
+        const openOverflowSelector = async () => {
+            if (overflowPaneOptions.size === 0) {
+                return;
+            }
+            const OPTION_CANCEL = "Cancel";
+            const options = [...overflowPaneOptions.keys(), OPTION_CANCEL];
+            const result = await confirmWithMessage(
+                this.plugin,
+                "Open additional settings",
+                "Select a settings section to open.",
+                options,
+                OPTION_CANCEL,
+                0
+            );
+            if (result === OPTION_CANCEL) {
+                return;
+            }
+            const target = overflowPaneOptions.get(result);
+            if (target) {
+                changeDisplay(target);
+            }
+        };
+
+        this.createEl(menuWrapper, "div", { cls: "sls-setting-menu-overflow" }, (el) => {
+            el.createEl("span", { text: "Need more options?" });
+            const openButton = el.createEl("button", { text: "More settings…" });
+            openButton.addEventListener("click", () => fireAndForget(openOverflowSelector()));
+        });
 
         this.createEl(
             menuWrapper,
@@ -700,7 +730,8 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
             icon: string,
             order: number,
             wizardHidden: boolean,
-            level?: ConfigLevel
+            level?: ConfigLevel,
+            menuHidden = false
         ) => {
             const el = this.createEl(parentEl, "div", { text: "" });
             DEV: {
@@ -715,7 +746,9 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
             }
             setLevelClass(el, level);
             el.createEl("h3", { text: title, cls: "sls-setting-pane-title" });
-            if (this.menuEl) {
+            if (menuHidden) {
+                overflowPaneOptions.set(`${icon} ${title}`, `${order}`);
+            } else if (this.menuEl) {
                 this.menuEl.createEl(
                     "label",
                     { cls: `sls-setting-label c-${order} ${wizardHidden ? "wizardHidden" : ""}` },
@@ -811,18 +844,20 @@ export class ObsidianLiveSyncSettingTab extends PluginSettingTab {
         void addPane(containerEl, $msg("obsidianLiveSyncSettingTab.titleSyncSettings"), "🔄", 30, false).then(
             bindPane(paneSyncSettings)
         );
-        void addPane(containerEl, "Selector", "🚦", 33, false, LEVEL_ADVANCED).then(bindPane(paneSelector));
-        void addPane(containerEl, "Customization sync", "🔌", 60, false, LEVEL_ADVANCED).then(
+        void addPane(containerEl, "Selector", "🚦", 33, false, LEVEL_ADVANCED, true).then(bindPane(paneSelector));
+        void addPane(containerEl, "Customization sync", "🔌", 60, false, LEVEL_ADVANCED, true).then(
             bindPane(paneCustomisationSync)
         );
 
-        void addPane(containerEl, "Hatch", "🧰", 50, true).then(bindPane(paneHatch));
-        void addPane(containerEl, "Advanced", "🔧", 46, false, LEVEL_ADVANCED).then(bindPane(paneAdvanced));
-        void addPane(containerEl, "Power users", "💪", 47, true, LEVEL_POWER_USER).then(bindPane(panePowerUsers));
+        void addPane(containerEl, "Hatch", "🧰", 50, true, undefined, true).then(bindPane(paneHatch));
+        void addPane(containerEl, "Advanced", "🔧", 46, false, LEVEL_ADVANCED, true).then(bindPane(paneAdvanced));
+        void addPane(containerEl, "Power users", "💪", 47, true, LEVEL_POWER_USER, true).then(bindPane(
+            panePowerUsers
+        ));
 
-        void addPane(containerEl, "Patches", "🩹", 51, false, LEVEL_EDGE_CASE).then(bindPane(panePatches));
+        void addPane(containerEl, "Patches", "🩹", 51, false, LEVEL_EDGE_CASE, true).then(bindPane(panePatches));
 
-        void addPane(containerEl, "Maintenance", "🎛️", 70, true).then(bindPane(paneMaintenance));
+        void addPane(containerEl, "Maintenance", "🎛️", 70, true, undefined, true).then(bindPane(paneMaintenance));
 
         void yieldNextAnimationFrame().then(() => {
             if (this.selectedScreen == "") {

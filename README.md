@@ -1,86 +1,109 @@
 # Just Sync
 
-![Version](https://img.shields.io/badge/version-0.2.0-blue.svg)
+![Version](https://img.shields.io/badge/version-0.2.11-blue.svg)
 
-**Just Sync** is a streamlined, personal fork of the [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync) plugin for Obsidian.
+**Just Sync** is a streamlined fork of [Self-hosted LiveSync](https://github.com/vrtmrz/obsidian-livesync) for Obsidian.
 
-It is designed with a single goal: **Reliable, self-hosted synchronization using CouchDB.**
+It focuses on one path only: **reliable CouchDB synchronization**.
 
-## What's New in v0.2.0
-- **Renamed Action:** The manual sync button is now clearer: **"Just-Sync now!"**.
-- **Crash Fix:** Resolved an issue causing initialization errors on startup.
-- **Optimized Defaults:** Pre-configured for best performance with CouchDB (V3 chunking, etc.).
+## Current Scope (v0.2.11)
 
-## Why "Just Sync"?
-The original LiveSync plugin is a masterpiece of flexibility, supporting P2P (WebRTC), Object Storage (S3/MinIO), and CouchDB. However, for users who only need a robust database-backed sync, the extra features can add complexity and build weight.
-
-**Just Sync removes:**
-- ❌ Peer-to-Peer (WebRTC) connectivity
-- ❌ Object Storage (S3/MinIO/R2) support
-- ❌ Complex setup wizards for discontinued services
-
-**Just Sync keeps:**
-- ✅ The core CouchDB replication engine (PouchDB <-> CouchDB)
+**Just Sync includes:**
+- ✅ CouchDB sync (PouchDB ↔ CouchDB)
 - ✅ End-to-End Encryption (E2EE)
-- ✅ Conflict resolution
-- ✅ Platform native performance
+- ✅ Conflict handling and maintenance tools
+- ✅ Desktop service controls for local backends
+
+**Just Sync excludes:**
+- ❌ Peer-to-Peer (WebRTC) sync
+- ❌ Object Storage backends (S3 / MinIO / R2)
+
+## Recent Changes
+
+- **v0.2.11**
+    - Removed deprecated P2P and Object Storage settings/UI
+    - Simplified settings to CouchDB-only workflow
+- **v0.2.10**
+    - Replaced Docker-dependent local flow with lightweight options:
+        - **PouchDB Server** backend (installable via npm)
+        - **Native CouchDB** backend (uses OS-installed service)
+    - Added backend selector and service controls in settings
+
+Full release notes: [updates.md](updates.md)
 
 ## Requirements
 
-1.  **Obsidian**
-2.  **A CouchDB Instance** (Self-hosted via Docker, Cloudant, etc.)
+1. **Obsidian**
+2. **CouchDB endpoint**, using one of these options:
+     - Managed/self-hosted CouchDB (Cloudant, VPS, Docker, etc.)
+     - Desktop local backend managed by plugin service control:
+         - PouchDB Server
+         - Native CouchDB
 
 ## Installation
 
-Currently, this plugin is distributed as a manual build.
+Manual install:
 
-1.  Download the `main.js`, `manifest.json`, and `styles.css`.
-2.  Create a folder `just-sync` in your vault's `.obsidian/plugins/` directory.
-3.  Place the files in that folder.
-4.  Reload Obsidian and enable "Just Sync".
+1. Download `main.js`, `manifest.json`, and `styles.css`.
+2. Create folder `just-sync` under `.obsidian/plugins/`.
+3. Put those files in `.obsidian/plugins/just-sync/`.
+4. Reload Obsidian and enable **Just Sync**.
 
 ## Setup Guide
 
-### 1. Prepare your CouchDB
-You need a CouchDB server running and accessible.
-👉 **[Read the CouchDB Setup Guide](docs/setup_couchdb.md)**
+### 1) Prepare CouchDB
 
-### 2. Configure the Plugin
-1. Open Obsidian Settings > **Just Sync**.
-2. Go to **Remote Configuration**.
-3. Enter your CouchDB connection details:
-    - **URI**: `http://your-server:5984` (or `https://...`)
-    - **Username**: Your CouchDB username
-    - **Password**: Your CouchDB password
-    - **Database Name**: e.g., `obsidian_sync`
-4. Click **Check** to verify connectivity.
-5. Enable **End-to-End Encryption** (Highly Recommended) and set a passphrase.
+Bring up your CouchDB endpoint (remote or local).
 
-### 3. Usage
-- **Auto-Sync:** Changes sync automatically in the background.
-- **Manual Sync:** Click the **"Just-Sync now!"** button (sidebar icon) to force a push/pull immediately.
-6. Click **Apply** and then enable the plugin synchronization in the main settings.
+For server setup details, see: [docs/setup_couchdb.md](docs/setup_couchdb.md)
+
+### 2) Configure Just Sync
+
+1. Open **Settings → Just Sync → Remote Configuration**.
+2. Use **CouchDB** remote mode.
+3. Fill:
+     - **URI**: `http://your-server:5984` or `https://your-domain`
+     - **Username**
+     - **Password**
+     - **Database Name** (for example `obsidian_sync`)
+4. Click **Check** to validate connection.
+5. Enable **End-to-End Encryption** and set a strong passphrase.
+6. Click **Apply**.
+
+### 3) Optional: Desktop Service Control
+
+On desktop, you can use built-in service controls to run a local backend:
+
+- Select backend: **PouchDB Server** or **Native CouchDB**
+- Start/Stop service from settings
+- Use **Start All Services** when working with tunnel workflows
+
+### 4) Use Sync
+
+- **Auto Sync** runs in the background.
+- **Manual Sync** can be triggered from the ribbon action.
 
 ## Development
-
-To build this plugin from source:
 
 ```bash
 # Install dependencies
 npm install
 
-# Fast Build (Production) - Use this for general development
+# Production build
 npm run build
 
-# Build with Translations (if you edited language files)
+# Build with i18n regeneration
 npm run build:with-i18n
 
-# Build for development (watch mode)
+# Watch mode
 npm run dev
+
+# Build and deploy to local Obsidian plugin directory
+npm run build:deploy
 ```
 
-The build artifacts will be in the `dist/` directory.
+Build output is generated in `dist/` (and deployed path when using `build:deploy`).
 
 ## License
 
-Based on Obsidian LiveSync. Licensed under the MIT License.
+Based on Obsidian LiveSync. Licensed under MIT.

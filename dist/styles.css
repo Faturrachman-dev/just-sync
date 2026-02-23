@@ -152,6 +152,28 @@ div.sls-setting-menu-btn {
     overflow-x: auto;
 }
 
+.sls-setting-menu-overflow {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-top: 6px;
+    margin-bottom: 2px;
+}
+
+.sls-setting-menu-overflow span {
+    color: var(--text-muted);
+    font-size: var(--font-ui-smaller);
+}
+
+.sls-setting-menu-overflow button {
+    background-color: var(--background-secondary-alt);
+    color: var(--text-normal);
+    border: 1px solid var(--background-modifier-border);
+    border-radius: 6px;
+    padding: 4px 10px;
+}
+
 body {
     --sls-col-transparent: transparent;
     --sls-col-warn: rgba(var(--background-modifier-error-rgb), 0.1);

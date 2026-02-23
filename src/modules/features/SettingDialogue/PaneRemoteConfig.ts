@@ -32,6 +32,7 @@ import {
 } from "../../../common/serviceControl.ts";
 import { isPouchDBServerAvailable, installPouchDBServer } from "../../../common/pouchdbServer.ts";
 import { getNativeCouchDBDescription } from "../../../common/nativeCouchDB.ts";
+import { buildCloudflaredTunnelRunCommand } from "../../../common/cloudflared.ts";
 
 function getSettingsFromEditingSettings(editingSettings: AllSettings): ObsidianLiveSyncSettings {
     const workObj = { ...editingSettings } as ObsidianLiveSyncSettings;
@@ -488,7 +489,7 @@ export function paneRemoteConfig(
 
             new Setting(paneEl)
                 .setName("Start tunnel")
-                .setDesc("Execute 'cloudflared tunnel run <name>'.")
+                .setDesc("Execute Cloudflared tunnel with explicit config file.")
                 .addButton((button) =>
                     button
                         .setButtonText("▶ Start Tunnel")
@@ -500,7 +501,7 @@ export function paneRemoteConfig(
                                 return;
                             }
 
-                            const command = `cloudflared tunnel run "${tunnelName}"`;
+                            const command = buildCloudflaredTunnelRunCommand(tunnelName);
                             setStatus(`⏳ Starting tunnel '${tunnelName}'...`);
 
                             const result = await executeServerCommand(command);

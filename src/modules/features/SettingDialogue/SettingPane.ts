@@ -107,7 +107,8 @@ export type PageFunctions = {
         icon: string,
         order: number,
         wizardHidden: boolean,
-        level?: ConfigLevel
+        level?: ConfigLevel,
+        menuHidden?: boolean
     ) => Promise<HTMLDivElement>;
     addPanel: (
         parentEl: HTMLElement,

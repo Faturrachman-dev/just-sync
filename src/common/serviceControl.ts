@@ -7,6 +7,7 @@
 
 import { Logger, LOG_LEVEL_INFO, LOG_LEVEL_NOTICE, LOG_LEVEL_VERBOSE } from "octagonal-wheels/common/logger";
 import { executeServerCommand, type ServerCommandResult } from "./serverCommand";
+import { buildCloudflaredTunnelRunCommand } from "./cloudflared";
 import {
     startPouchDBServer,
     stopPouchDBServer,
@@ -234,7 +235,8 @@ export async function startAllServices(
     // 2. Start Cloudflared if configured
     if (tunnelName && tunnelName.trim()) {
         onStatusUpdate("⏳ Starting Cloudflared tunnel...");
-        const tunnelResult = await executeServerCommand(`cloudflared tunnel run "${tunnelName}"`);
+        const command = buildCloudflaredTunnelRunCommand(tunnelName);
+        const tunnelResult = await executeServerCommand(command);
         if (tunnelResult.success) {
             results.push("Cloudflared: " + (tunnelResult.output || "Started"));
         } else {
